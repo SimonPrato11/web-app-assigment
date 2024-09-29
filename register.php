@@ -1,13 +1,6 @@
 <?php
 session_start();
-require 'server.php'; // Include your DB connection
-
-// Enable error reporting for debugging
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
-$errors = []; // Array to store error messages
+require 'server.php'; 
 
 // Check if the form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -15,7 +8,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = mysqli_real_escape_string($conn, $_POST['email']);
     $password = mysqli_real_escape_string($conn, $_POST['password']);
 
-    // Validate the password (must be at least 6 characters and contain both letters and numbers)
+    // Validate the password 
     if (strlen($password) < 6 || !preg_match('/[A-Za-z]/', $password) || !preg_match('/[0-9]/', $password)) {
         $errors[] = "Password must be at least 6 characters long and contain both letters and numbers.";
     }

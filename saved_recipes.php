@@ -7,10 +7,9 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
-// Include the database connection
-require 'server.php'; // Make sure this connects to your database
+require 'server.php';
 
-$user_id = $_SESSION['user_id']; // Get the logged-in user's ID
+$user_id = $_SESSION['user_id']; 
 $saved_recipes = [];
 
 // Query to get the user's saved recipes

@@ -1,6 +1,6 @@
 <?php
 session_start();
-require 'server.php'; // Ensure this file connects to your database
+require 'server.php'; 
 
 // Check if the user is logged in
 if (!isset($_POST['user_id']) || !isset($_POST['recipe_id'])) {

@@ -7,10 +7,9 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
-// Include the database connection
-require 'server.php'; // Make sure this connects to your database
+require 'server.php'; 
 
-$user_id = $_SESSION['user_id']; // Get the logged-in user's ID
+$user_id = $_SESSION['user_id']; 
 
 $search_query = "";
 $ingredient_query = "";
@@ -28,7 +27,7 @@ $result_favorites = mysqli_stmt_get_result($stmt_favorites);
 
 if (mysqli_num_rows($result_favorites) > 0) {
     while ($row = mysqli_fetch_assoc($result_favorites)) {
-        $favorites[] = $row['recipe_id']; // Store favorite recipe IDs
+        $favorites[] = $row['recipe_id']; 
     }
 }
 
@@ -79,7 +78,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $query = "SELECT DISTINCT r.* FROM recipes r 
               LEFT JOIN ingredients i ON r.recipe_id = i.recipe_id";
               
-    // Only add the WHERE clause if there are conditions
     if (count($conditions) > 0) {
         $query .= " WHERE " . implode(" AND ", $conditions);
     }
@@ -101,7 +99,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Include jQuery for AJAX -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> 
 </head>
 <body>
     <h1>Welcome, <?php echo htmlspecialchars($_SESSION['name']); ?>!</h1>
@@ -110,10 +108,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     <!-- Recipes Section -->
     <h2>Recipes</h2>
-    
-
     <!-- Search and Filter Form -->
-         <!-- Add the View Saved Recipes button here -->
     <a href="saved_recipes.php">
         <button>View Saved Recipes</button>
     </a>
@@ -161,7 +156,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                         <p><strong>Cook Time:</strong> <?php echo htmlspecialchars($recipe['cook_time']); ?> minutes</p>
                         <p><strong>Servings:</strong> <?php echo htmlspecialchars($recipe['servings']); ?></p>
                         
-                          <!-- Display Taste Rating -->
+                          <!-- Display Rating -->
                         <p>
     <strong>Rating:</strong>
     <span class="stars-container">
@@ -196,19 +191,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
    <!-- JavaScript for handling rating and favorite actions -->
     <script>
-           // Handle rating click event
     $(document).on('click', '.stars', function() {
         var rating = $(this).data('value');
         var recipe_id = $(this).data('recipe-id');
         var user_id = <?php echo $_SESSION['user_id']; ?>;
-        var starsContainer = $(this).parent(); // Get the stars container to update
+        var starsContainer = $(this).parent(); 
 
         // Send rating to server via AJAX
         $.ajax({
             url: 'rate_recipe.php',
             method: 'POST',
             data: { recipe_id: recipe_id, user_id: user_id, taste_rating: rating },
-            dataType: 'json', // Expect JSON response
+            dataType: 'json', 
             success: function(response) {
                 // Update the stars based on the new average rating
                 var avg_rating = response.avg_rating;

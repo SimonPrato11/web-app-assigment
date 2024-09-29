@@ -1,15 +1,9 @@
 <?php
 session_start();
-require 'server.php'; // Include your DB connection
+require 'server.php'; 
 
-// Enable error reporting for debugging purposes (remove in production)
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
 
-$error_message = ""; // To store error messages
-
-// Process form submission if the request method is POST
+// Process form submission
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = mysqli_real_escape_string($conn, $_POST['email']);
     $password = mysqli_real_escape_string($conn, $_POST['password']);
@@ -29,7 +23,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION['name'] = $user['name'];
             $_SESSION['email'] = $user['email'];
 
-            // Redirect to a protected page (e.g., dashboard.php)
+            // Redirect to a protected page 
             header('Location: dashboard.php');
             exit();
         } else {
