@@ -3,7 +3,7 @@
 $servername = "localhost";
 $username = "root";  // Default username in XAMPP
 $password = "";      // Default password is empty in XAMPP
-$dbname = "app_db";  // The database you created
+$dbname = "recipe_app";  // The database you created
 
 
 // Create a connection
