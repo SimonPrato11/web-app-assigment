@@ -49,36 +49,42 @@ if (mysqli_num_rows($result_ratings) > 0) {
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $conditions = [];
 
-    // Search by recipe title
-    if (isset($_GET['search']) && !empty($_GET['search'])) {
+    // Check if search query is provided
+    if (isset($_GET['search']) && !empty(trim($_GET['search']))) {
+        // If search query is not empty, add condition
         $search_query = mysqli_real_escape_string($conn, $_GET['search']);
         $conditions[] = "r.title LIKE '%$search_query%'";
     }
 
-    // Search by ingredient
-    if (isset($_GET['ingredient']) && !empty($_GET['ingredient'])) {
+    // Check if ingredient filter is provided
+    if (isset($_GET['ingredient']) && !empty(trim($_GET['ingredient']))) {
+        // If ingredient filter is not empty, add condition
         $ingredient_query = mysqli_real_escape_string($conn, $_GET['ingredient']);
         $conditions[] = "i.ingredient_name LIKE '%$ingredient_query%'";
     }
 
-    // Filter by category
+    // Check if category filter is provided
     if (isset($_GET['category']) && !empty($_GET['category'])) {
         $category_query = mysqli_real_escape_string($conn, $_GET['category']);
         $conditions[] = "r.category = '$category_query'";
     }
 
-    // Filter by cook time
+    // Check if cook time filter is provided
     if (isset($_GET['cook_time']) && !empty($_GET['cook_time'])) {
         $cook_time_query = (int)$_GET['cook_time'];
         $conditions[] = "r.cook_time <= $cook_time_query";
     }
 
-    // Build the query based on conditions
+    // Build the query
     $query = "SELECT DISTINCT r.* FROM recipes r 
               LEFT JOIN ingredients i ON r.recipe_id = i.recipe_id";
+              
+    // Only add the WHERE clause if there are conditions
     if (count($conditions) > 0) {
         $query .= " WHERE " . implode(" AND ", $conditions);
     }
+
+    $query .= " ORDER BY r.title ASC";
 
     $result = mysqli_query($conn, $query);
 
@@ -157,20 +163,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                         
                           <!-- Display Taste Rating -->
                         <p>
-                            <strong>Taste Rating:</strong>
-                            <span class="stars-container">
-                                <?php 
-                                // Check if the recipe has a rating
-                                $avg_rating = isset($ratings[$recipe['recipe_id']]) ? $ratings[$recipe['recipe_id']] : 0; 
-                                
-                                // Display the stars based on the average rating
-                                for ($i = 1; $i <= 5; $i++) {
-                                    echo '<span class="stars ' . ($i <= $avg_rating ? 'selected' : '') . '" data-value="' . $i . '" data-recipe-id="' . $recipe['recipe_id'] . '">&#9733;</span>';
-                                }
-                                ?>
-                            </span> (<?php echo $avg_rating; ?>/5)
-                        </p>
-                        
+    <strong>Rating:</strong>
+    <span class="stars-container">
+        <?php 
+        // Check if the recipe has a rating
+        $avg_rating = isset($ratings[$recipe['recipe_id']]) ? $ratings[$recipe['recipe_id']] : 0; 
+        
+        // Display the stars based on the average rating
+        for ($i = 1; $i <= 5; $i++) {
+            echo '<span class="stars ' . ($i <= $avg_rating ? 'selected' : '') . '" data-value="' . $i . '" data-recipe-id="' . $recipe['recipe_id'] . '">&#9733;</span>';
+        }
+        ?>
+    </span> 
+    <span class="avg-rating">(<?php echo $avg_rating; ?>/5)</span>
+</p>
+
                         <!-- Save to Favorites button -->
                         <?php if (in_array($recipe['recipe_id'], $favorites)): ?>
                             <!-- If recipe is already a favorite -->
@@ -189,26 +196,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
    <!-- JavaScript for handling rating and favorite actions -->
     <script>
-        // Handle rating click event
-        $(document).on('click', '.stars', function() {
-            var rating = $(this).data('value');
-            var recipe_id = $(this).data('recipe-id');
-            var user_id = <?php echo $_SESSION['user_id']; ?>;
+           // Handle rating click event
+    $(document).on('click', '.stars', function() {
+        var rating = $(this).data('value');
+        var recipe_id = $(this).data('recipe-id');
+        var user_id = <?php echo $_SESSION['user_id']; ?>;
+        var starsContainer = $(this).parent(); // Get the stars container to update
 
-            // Send rating to server via AJAX
-            $.ajax({
-                url: 'rate_recipe.php',
-                method: 'POST',
-                data: { recipe_id: recipe_id, user_id: user_id, taste_rating: rating },
-                success: function(response) {
-                    alert(response); // Notify the user
-                    // Optionally refresh the page to show updated average rating
-                },
-                error: function() {
-                    alert('An error occurred while rating the recipe.');
-                }
-            });
+        // Send rating to server via AJAX
+        $.ajax({
+            url: 'rate_recipe.php',
+            method: 'POST',
+            data: { recipe_id: recipe_id, user_id: user_id, taste_rating: rating },
+            dataType: 'json', // Expect JSON response
+            success: function(response) {
+                // Update the stars based on the new average rating
+                var avg_rating = response.avg_rating;
+                
+                // Reset stars in the container
+                starsContainer.find('.stars').each(function(index) {
+                    var starValue = $(this).data('value');
+                    if (starValue <= avg_rating) {
+                        $(this).addClass('selected'); // Add selected class for filled stars
+                    } else {
+                        $(this).removeClass('selected'); // Remove selected class for unfilled stars
+                    }
+                });
+
+                // Update the average rating display (if it's shown after the stars)
+                starsContainer.next('span.avg-rating').text(`(${avg_rating}/5)`);
+
+                // Notify the user
+                alert("Rating updated to " + avg_rating + "!");
+            },
+            error: function() {
+                alert('An error occurred while rating the recipe.');
+            }
         });
+    });
 
         // Handle save to favorites
         $(document).on('click', '.favorite-btn', function() {
