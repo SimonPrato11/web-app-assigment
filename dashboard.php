@@ -32,6 +32,19 @@ if (mysqli_num_rows($result_favorites) > 0) {
     }
 }
 
+// Query to get the average taste rating for each recipe
+$ratings_query = "SELECT recipe_id, AVG(taste_rating) as avg_taste_rating 
+                  FROM ratings 
+                  GROUP BY recipe_id";
+$result_ratings = mysqli_query($conn, $ratings_query);
+
+if (mysqli_num_rows($result_ratings) > 0) {
+    while ($row = mysqli_fetch_assoc($result_ratings)) {
+        $ratings[$row['recipe_id']] = round($row['avg_taste_rating'], 1); // Store average rating, rounded to 1 decimal
+}
+
+}
+
 // Handle the search request and filters
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $conditions = [];
@@ -91,6 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     <!-- Recipes Section -->
     <h2>Recipes</h2>
+    
 
     <!-- Search and Filter Form -->
          <!-- Add the View Saved Recipes button here -->
@@ -141,6 +155,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                         <p><strong>Cook Time:</strong> <?php echo htmlspecialchars($recipe['cook_time']); ?> minutes</p>
                         <p><strong>Servings:</strong> <?php echo htmlspecialchars($recipe['servings']); ?></p>
                         
+                          <!-- Display Taste Rating -->
+                        <p>
+                            <strong>Taste Rating:</strong>
+                            <span class="stars-container">
+                                <?php 
+                                // Check if the recipe has a rating
+                                $avg_rating = isset($ratings[$recipe['recipe_id']]) ? $ratings[$recipe['recipe_id']] : 0; 
+                                
+                                // Display the stars based on the average rating
+                                for ($i = 1; $i <= 5; $i++) {
+                                    echo '<span class="stars ' . ($i <= $avg_rating ? 'selected' : '') . '" data-value="' . $i . '" data-recipe-id="' . $recipe['recipe_id'] . '">&#9733;</span>';
+                                }
+                                ?>
+                            </span> (<?php echo $avg_rating; ?>/5)
+                        </p>
+                        
                         <!-- Save to Favorites button -->
                         <?php if (in_array($recipe['recipe_id'], $favorites)): ?>
                             <!-- If recipe is already a favorite -->
@@ -157,24 +187,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         <?php endif; ?>
     </div>
 
-    <!-- JavaScript for handling the favorite button -->
+   <!-- JavaScript for handling rating and favorite actions -->
     <script>
+        // Handle rating click event
+        $(document).on('click', '.stars', function() {
+            var rating = $(this).data('value');
+            var recipe_id = $(this).data('recipe-id');
+            var user_id = <?php echo $_SESSION['user_id']; ?>;
+
+            // Send rating to server via AJAX
+            $.ajax({
+                url: 'rate_recipe.php',
+                method: 'POST',
+                data: { recipe_id: recipe_id, user_id: user_id, taste_rating: rating },
+                success: function(response) {
+                    alert(response); // Notify the user
+                    // Optionally refresh the page to show updated average rating
+                },
+                error: function() {
+                    alert('An error occurred while rating the recipe.');
+                }
+            });
+        });
+
+        // Handle save to favorites
         $(document).on('click', '.favorite-btn', function() {
             var button = $(this);
-            var recipe_id = button.data('recipe-id'); // Get the recipe ID from the button
-            var user_id = <?php echo $_SESSION['user_id']; ?>; // Get the logged-in user's ID
+            var recipe_id = button.data('recipe-id');
+            var user_id = <?php echo $_SESSION['user_id']; ?>;
 
-            // Make AJAX request to save the recipe to favorites
             $.ajax({
                 url: 'save_favorite.php',
                 method: 'POST',
                 data: { recipe_id: recipe_id, user_id: user_id },
                 success: function(response) {
                     if (response.trim() === "Recipe saved to favorites!") {
-                        button.text('Saved'); // Change button text to "Saved"
-                        button.prop('disabled', true); // Disable the button to prevent multiple clicks
+                        button.text('Saved');
+                        button.prop('disabled', true);
                     } else {
-                        alert(response); // Show the response message
+                        alert(response);
                     }
                 },
                 error: function() {
