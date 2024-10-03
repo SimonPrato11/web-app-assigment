@@ -2,6 +2,9 @@
 session_start();
 require 'server.php'; 
 
+header('Content-Type: application/json'); // Set the header to return JSON
+$errors = [];
+
 // Check if the form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $name = mysqli_real_escape_string($conn, $_POST['name']);
@@ -30,55 +33,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $query = "INSERT INTO users (name, email, password) VALUES ('$name', '$email', '$hashed_password')";
 
         if (mysqli_query($conn, $query)) {
-            // If registration is successful, redirect to the login page
-            header('Location: login.php');
+            // Return success as JSON
+            echo json_encode(['success' => true]);
             exit();
         } else {
             $errors[] = "Registration failed: " . mysqli_error($conn);
         }
     }
+
+    // Return errors as JSON if any exist
+    echo json_encode(['success' => false, 'errors' => $errors]);
+    exit();
 }
 ?>
-
-<!-- Display the registration form with error messages (if any) -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register</title>
-</head>
-<body>
-    <h2>Register</h2>
-
-    <?php
-    // Display errors if there are any
-    if (count($errors) > 0) {
-        echo "<div style='color: red;'>";
-        foreach ($errors as $error) {
-            echo "<p>" . $error . "</p>";
-        }
-        echo "</div>";
-    }
-    ?>
-
-    <form action="register.php" method="POST">
-        <label for="name">Name:</label>
-        <input type="text" name="name" value="<?php echo isset($name) ? $name : ''; ?>" required><br>
-
-        <label for="email">Email:</label>
-        <input type="email" name="email" value="<?php echo isset($email) ? $email : ''; ?>" required><br>
-
-        <label for="password">Password:</label>
-        <input type="password" name="password" required><br>
-
-        <button type="submit">Register</button>
-    </form>
-
-    <br>
-    <!-- Button to go to login page -->
-    <form action="login.php">
-        <button type="submit">Go to Login</button>
-    </form>
-</body>
-</html>

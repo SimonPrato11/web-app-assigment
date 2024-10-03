@@ -2,6 +2,10 @@
 session_start();
 require 'server.php'; 
 
+header('Content-Type: application/json'); // Return JSON
+
+// Initialize an empty array to store error messages
+$error_message = "";
 
 // Process form submission
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -23,8 +27,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION['name'] = $user['name'];
             $_SESSION['email'] = $user['email'];
 
-            // Redirect to a protected page 
-            header('Location: dashboard.php');
+            // Return success response
+            echo json_encode(['success' => true]);
             exit();
         } else {
             // Incorrect password
@@ -34,42 +38,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // No user found with that email
         $error_message = "Invalid email or password!";
     }
+
+    // If errors, return them as JSON
+    echo json_encode(['success' => false, 'message' => $error_message]);
+    exit();
 }
-?>
-
-<!-- Display the login form and show errors if there are any -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-</head>
-<body>
-    <h2>Login</h2>
-
-    <!-- Display error message if there's any -->
-    <?php if (!empty($error_message)): ?>
-        <div style="color: red;">
-            <?php echo htmlspecialchars($error_message); ?>
-        </div>
-    <?php endif; ?>
-
-    <!-- Login form -->
-    <form action="login.php" method="POST">
-        <label for="email">Email:</label>
-        <input type="email" name="email" required><br>
-
-        <label for="password">Password:</label>
-        <input type="password" name="password" required><br>
-
-        <button type="submit">Login</button>
-    </form>
-
-    <br>
-    <!-- Button to go to registration page -->
-    <form action="registration.html">
-        <button type="submit">Go to Registration</button>
-    </form>
-</body>
-</html>
