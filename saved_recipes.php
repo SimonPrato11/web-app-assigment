@@ -26,37 +26,7 @@ if (mysqli_num_rows($result) > 0) {
         $saved_recipes[] = $row;
     }
 }
+
+// Return the saved recipes as a JSON response
+echo json_encode($saved_recipes);
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Saved Recipes</title>
-</head>
-<body>
-    <h1>Your Saved Recipes</h1>
-
-    <?php if (count($saved_recipes) > 0): ?>
-        <ul>
-            <?php foreach ($saved_recipes as $recipe): ?>
-                <li>
-                    <strong><?php echo htmlspecialchars($recipe['title']); ?></strong>
-                    <p><?php echo htmlspecialchars($recipe['description']); ?></p>
-                    <p><strong>Category:</strong> <?php echo htmlspecialchars($recipe['category']); ?></p>
-                    <p><strong>Prep Time:</strong> <?php echo htmlspecialchars($recipe['prep_time']); ?> minutes</p>
-                    <p><strong>Cook Time:</strong> <?php echo htmlspecialchars($recipe['cook_time']); ?> minutes</p>
-                    <p><strong>Servings:</strong> <?php echo htmlspecialchars($recipe['servings']); ?></p>
-                </li>
-            <?php endforeach; ?>
-        </ul>
-    <?php else: ?>
-        <p>No recipes saved yet.</p>
-    <?php endif; ?>
-
-    <!-- Back to Dashboard button -->
-    <a href="dashboard.php">
-        <button>Back to Dashboard</button>
-    </a>
-</body>
-</html>

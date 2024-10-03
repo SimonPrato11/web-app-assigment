@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="css/dashboard.css" />
+  </head>
+  <body>
+    <!-- Recipes Section -->
+    <h2>Recipes</h2>
+
+    <!-- Search and Filter Form -->
+    <a href="saved_recipes.html">
+      <button>View Saved Recipes</button>
+    </a>
+
+    <form id="searchForm">
+      <!-- Search by recipe title -->
+      <label for="search">Search Recipes:</label>
+      <input
+        type="text"
+        id="search"
+        name="search"
+        placeholder="Enter recipe name..."
+      />
+
+      <!-- Filter by ingredient -->
+      <label for="ingredient">Ingredient:</label>
+      <input
+        type="text"
+        id="ingredient"
+        name="ingredient"
+        placeholder="Enter ingredient..."
+      />
+
+      <!-- Filter by category -->
+      <label for="category">Category:</label>
+      <select name="category" id="category">
+        <option value="">All Categories</option>
+        <option value="Main">Main</option>
+        <option value="Dessert">Dessert</option>
+        <option value="Starter">Starter</option>
+      </select>
+
+      <!-- Filter by cook time -->
+      <label for="cook_time">Cook Time:</label>
+      <select name="cook_time" id="cook_time">
+        <option value="">Any</option>
+        <option value="30">Under 30 minutes</option>
+        <option value="60">Under 60 minutes</option>
+        <option value="120">Under 120 minutes</option>
+      </select>
+
+      <button type="submit">Search</button>
+    </form>
+
+    <!-- Displaying search results -->
+    <div id="results">
+      <ul id="recipesList"></ul>
+    </div>
+
+    <!-- Link to external JavaScript file -->
+    <script src="js/dashboard.js"></script>
+  </body>
+</html>
