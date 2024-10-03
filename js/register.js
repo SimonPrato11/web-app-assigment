@@ -20,7 +20,7 @@ document
         if (data.success) {
           // Registration successful, redirect to login page or show success message
           alert('Registration successful!');
-          window.location.href = 'login.php'; // Redirect to login page
+          window.location.href = 'login.html'; // Redirect to login page
         } else {
           // Display errors
           const errorMessages = data.errors

@@ -17,7 +17,7 @@ document.getElementById('loginForm').addEventListener('submit', function (e) {
     .then((data) => {
       if (data.success) {
         // If login is successful, redirect to the dashboard
-        window.location.href = 'dashboard.php';
+        window.location.href = 'dashboard.html';
       } else {
         // Display the error message
         document.getElementById(
