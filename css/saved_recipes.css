@@ -1,10 +1,61 @@
 body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4f4;
+  color: #333;
   max-width: 1200px;
   margin: auto;
 }
-.main {
-  max-width: 1200px;
-  margin: auto;
-  overflow: hidden;
-  background: #ffffff;
+
+h1 {
+  text-align: center;
+  color: #4caf50;
+  margin-top: 40px;
+  font-size: 2.5em;
+}
+
+a {
+  text-decoration: none;
+}
+
+#savedRecipesContainer {
+  background-color: #fff;
+  padding: 20px;
+  margin: 20px auto;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  max-width: 800px;
+}
+
+a button {
+  display: block;
+  margin: 20px auto;
+  background-color: #4caf50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+a button:hover {
+  background-color: #45a049;
+}
+
+/* Media Queries */
+@media (max-width: 600px) {
+  h1 {
+    font-size: 1.8em;
+  }
+
+  #savedRecipesContainer {
+    padding: 15px;
+    margin: 10px;
+  }
+
+  a button {
+    width: 100%;
+    padding: 15px;
+  }
 }

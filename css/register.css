@@ -50,6 +50,7 @@ html {
   background: #feb47b;
 }
 
+/* Media Queries */
 @media (max-width: 600px) {
   .container {
     padding: 15px;

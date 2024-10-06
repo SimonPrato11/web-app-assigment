@@ -2,7 +2,7 @@
 session_start();
 require 'server.php'; 
 
-header('Content-Type: application/json'); // Set the header to return JSON
+header('Content-Type: application/json'); 
 $errors = [];
 
 // Check if the form is submitted
@@ -33,7 +33,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $query = "INSERT INTO users (name, email, password) VALUES ('$name', '$email', '$hashed_password')";
 
         if (mysqli_query($conn, $query)) {
-            // Return success as JSON
             echo json_encode(['success' => true]);
             exit();
         } else {
@@ -41,7 +40,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
-    // Return errors as JSON if any exist
     echo json_encode(['success' => false, 'errors' => $errors]);
     exit();
 }

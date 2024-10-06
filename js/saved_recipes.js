@@ -1,5 +1,3 @@
-// saved_recipes.js
-
 document.addEventListener('DOMContentLoaded', function () {
   // Fetch saved recipes from the server
   fetch('saved_recipes.php')
@@ -23,7 +21,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
         container.appendChild(ul);
       } else {
-        // No recipes saved yet
         container.innerHTML = '<p>No recipes saved yet.</p>';
       }
     })

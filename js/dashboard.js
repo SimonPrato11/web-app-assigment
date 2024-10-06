@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', function () {
-  // Set user info from session (you can fetch this via AJAX too if needed)
   document.getElementById('userName').innerText =
     sessionStorage.getItem('name');
   document.getElementById('userEmail').innerText =
@@ -13,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
       // Get form data and build query string for GET request
       const formData = new FormData(this);
-      const queryParams = new URLSearchParams(formData).toString(); // Converts form data to query params
+      const queryParams = new URLSearchParams(formData).toString();
 
       // Send the GET request with query parameters
       fetch('dashboard.php?' + queryParams, {
