@@ -51,6 +51,7 @@ html {
   background: #2575fc;
 }
 
+/* Media Queries */
 @media (max-width: 600px) {
   .login-container {
     padding: 20px;

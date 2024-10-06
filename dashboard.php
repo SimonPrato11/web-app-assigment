@@ -36,7 +36,7 @@ $result_ratings = mysqli_query($conn, $ratings_query);
 
 if (mysqli_num_rows($result_ratings) > 0) {
     while ($row = mysqli_fetch_assoc($result_ratings)) {
-        $ratings[$row['recipe_id']] = round($row['avg_taste_rating'], 1); // Store average rating, rounded to 1 decimal
+        $ratings[$row['recipe_id']] = round($row['avg_taste_rating'], 1); 
     }
 }
 

@@ -1,4 +1,3 @@
-// login.js
 document.getElementById('loginForm').addEventListener('submit', function (e) {
   e.preventDefault(); // Prevent the default form submission
 
@@ -15,8 +14,13 @@ document.getElementById('loginForm').addEventListener('submit', function (e) {
   })
     .then((response) => response.json())
     .then((data) => {
-      if (data.success) {
-        // If login is successful, redirect to the dashboard
+      if (data) {
+        // If login is successful, store user info in sessionStorage
+        sessionStorage.setItem('user_id', data.user_id);
+        sessionStorage.setItem('name', data.name);
+        sessionStorage.setItem('email', data.email);
+
+        // Redirect to the dashboard
         window.location.href = 'dashboard.html';
       } else {
         // Display the error message

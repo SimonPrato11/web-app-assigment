@@ -1,9 +1,7 @@
-// register.js
 document
   .getElementById('registerForm')
   .addEventListener('submit', function (e) {
-    e.preventDefault(); // Prevent the form from submitting the traditional way
-
+    e.preventDefault();
     // Get form data
     const formData = new FormData(this);
 

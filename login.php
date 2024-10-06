@@ -2,9 +2,8 @@
 session_start();
 require 'server.php'; 
 
-header('Content-Type: application/json'); // Return JSON
+header('Content-Type: application/json'); 
 
-// Initialize an empty array to store error messages
 $error_message = "";
 
 // Process form submission
@@ -27,8 +26,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION['name'] = $user['name'];
             $_SESSION['email'] = $user['email'];
 
-            // Return success response
-            echo json_encode(['success' => true]);
+            // Return success response with user data
+            echo json_encode([
+                'success' => true,
+                'user_id' => $user['user_id'],
+                'name' => $user['name'],
+                'email' => $user['email']
+            ]);
             exit();
         } else {
             // Incorrect password
@@ -39,7 +43,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $error_message = "Invalid email or password!";
     }
 
-    // If errors, return them as JSON
     echo json_encode(['success' => false, 'message' => $error_message]);
     exit();
 }
